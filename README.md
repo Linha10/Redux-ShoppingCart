@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
+## 練習使用Redux & React-Redux 製作購物車系統 Learning Redux 
+
 ## Available Scripts
 
 In the project directory, you can run:
