@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { uiActions } from "./ui-slice";
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -13,7 +14,7 @@ const cartSlice = createSlice({
             //確認是否商品重複
             const existingItem = state.itemsList.find((item) => item.id === newItem.id)
             if (existingItem) {
-                existingItem.quantity ++;
+                existingItem.quantity++;
                 existingItem.totalPrice += newItem.price;
             } else {
                 state.itemsList.push({
@@ -23,18 +24,58 @@ const cartSlice = createSlice({
                     quantity: 1,
                     totalPrice: newItem.price,
                 });
-                state.totalQuantity ++ ;
+                state.totalQuantity++;
             }
         },
-        removeFromCart() {
-
+        removeFromCart(state, action) {
+            const id = action.payload;
+            const existingItem = state.itemsList.find(item => item.id === id)
+            if (existingItem.quantity === 1) {
+                state.itemsList = state.itemsList.filter(item => item.id !== id)
+                state.totalQuantity -- ;
+            }else {
+                existingItem.quantity -- ;
+                existingItem.totalPrice -= existingItem.price;
+            }
         },
         setShowCart(state) {
-            state.showCart = !state.showCart ;
+            state.showCart = !state.showCart;
         }
     }
 
 })
-
-export const cartActions = cartSlice.actions ;
-export default cartSlice ;
+export const sendCartData = ( cart )=>{
+    return async ( dispatch )=>{
+        dispatch(uiActions.showNotification({
+            open: true,
+            message: 'send req',
+            type: 'warning'
+          }));
+          const sendRequest = async () => {
+            const res = await fetch('https://redux-shop-67a99-default-rtdb.firebaseio.com/cartItems.json',
+              {
+                method: 'PUT',
+                body: JSON.stringify(cart)
+              }
+            );
+            const data = await res.json();
+      
+            dispatch(uiActions.showNotification({
+              open: true,
+              message: 'send req to db success',
+              type: 'success'
+            }))
+          };
+          try{
+              await sendRequest();
+          }catch(err){
+            dispatch(uiActions.showNotification({
+                open: true,
+                message: 'send req failed',
+                type: 'error'
+              }))
+          }
+    }
+}
+export const cartActions = cartSlice.actions;
+export default cartSlice;

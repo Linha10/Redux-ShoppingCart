@@ -10,3 +10,12 @@
   margin-top: 1rem;
   font-size: 20px;
 }
+.logout{
+  padding: 12px;
+  background-color: lightblue;
+  border: none;
+  border-radius: 10px;
+}
+.logout:hover{
+  background-color: rgb(182, 182, 100);
+}
